@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { contactAPI } from '../services/api';
 import './Contact.css';
 
 const Contact = ({ data }) => {
@@ -7,6 +8,9 @@ const Contact = ({ data }) => {
     email: '',
     message: ''
   });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
 
   const handleChange = (e) => {
     setFormData({
@@ -15,12 +19,34 @@ const Contact = ({ data }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Xử lý gửi form ở đây
-    console.log('Form submitted:', formData);
-    alert('Cảm ơn bạn đã liên hệ! Tôi sẽ phản hồi sớm nhất có thể.');
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await contactAPI.sendMessage(formData);
+      
+      if (response.success) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        
+        // Show success message for 5 seconds
+        setTimeout(() => {
+          setSubmitStatus(null);
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      setSubmitStatus('error');
+      
+      // Hide error message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus(null);
+      }, 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -74,6 +100,20 @@ const Contact = ({ data }) => {
         
         <div className="contact-form">
           <h3>Gửi tin nhắn</h3>
+          
+          {/* Status Messages */}
+          {submitStatus === 'success' && (
+            <div className="alert alert-success">
+              ✅ Tin nhắn đã được gửi thành công! Tôi sẽ phản hồi bạn sớm nhất có thể.
+            </div>
+          )}
+          
+          {submitStatus === 'error' && (
+            <div className="alert alert-error">
+              ❌ Có lỗi xảy ra khi gửi tin nhắn. Vui lòng thử lại sau hoặc liên hệ trực tiếp qua email.
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name">Họ tên:</label>
@@ -84,6 +124,7 @@ const Contact = ({ data }) => {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
             <div className="form-group">
@@ -95,6 +136,7 @@ const Contact = ({ data }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
             <div className="form-group">
@@ -106,10 +148,22 @@ const Contact = ({ data }) => {
                 onChange={handleChange}
                 rows="5"
                 required
+                disabled={isSubmitting}
               ></textarea>
             </div>
-            <button type="submit" className="submit-btn">
-              Gửi tin nhắn
+            <button 
+              type="submit" 
+              className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="spinner"></span>
+                  Đang gửi...
+                </>
+              ) : (
+                'Gửi tin nhắn'
+              )}
             </button>
           </form>
         </div>
