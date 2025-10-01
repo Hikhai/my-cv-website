@@ -1,52 +1,266 @@
-# React CV - Website CV Cá Nhân
+# React CV - Full Stack Website CV
 
-Dự án tạo CV cá nhân bằng React.js với thiết kế hiện đại, responsive và có thể in được.
+Dự án tạo CV cá nhân full-stack bằng React.js + Node.js với thiết kế hiện đại, responsive và tính năng gửi email thật.
 
-## 🚀 Tính năng
+## 🚀 Triển khai
 
+### GitHub Pages (Frontend only)
+```bash
+npm run build
+# Deploy dist/ folder to GitHub Pages
+```
+
+### Production Deployment (Full-stack)
+1. **Backend**: Deploy to services like Railway, Render, or Heroku
+2. **Frontend**: Update API_URL to production backend URL
+3. **Environment**: Set production environment variables
+
+### Email Service Setup
+1. Bật 2-factor authentication cho Gmail
+2. Tạo App Password: [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+3. Copy password vào file `.env`:
+   ```
+   EMAIL_PASSWORD=abcd efgh ijkl mnop
+   ```
+
+## 🤝 Contributing
+
+1. Fork repository
+2. Tạo feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Mở Pull Request
+
+## 📝 License
+
+Dự án này là open-source và sử dụng [MIT License](LICENSE).
+
+## 👨‍💻 Author
+
+**Kỳ Hoàng**
+- GitHub: [@Hikhai](https://github.com/Hikhai)
+- Email: hoangdinhky1109@gmail.com
+
+---
+
+⭐ Nếu dự án này hữu ích, hãy cho một star nhé!
+
+### Frontend Features
 - ✅ Thiết kế responsive cho mọi thiết bị
 - ✅ Giao diện hiện đại với CSS gradient và animation
 - ✅ Các section đầy đủ: Header, About, Experience, Education, Skills, Contact
-- ✅ Form liên hệ tương tác
+- ✅ **Form liên hệ thực sự gửi email** 📧
+- ✅ Loading states và error handling
 - ✅ Thanh tiến trình kỹ năng
 - ✅ Timeline kinh nghiệm làm việc
 - ✅ Hỗ trợ in CV (Print-friendly)
-- ✅ Mã nguồn mở và dễ tùy chỉnh
+- ✅ Auto-fallback to static data nếu backend offline
 
-## 🛠️ Công nghệ sử dụng
+### Backend Features (NEW! 🎉)
+- ✅ **RESTful API** với Node.js + Express
+- ✅ **Email service** với Nodemailer (Gmail integration)
+- ✅ **Contact form** gửi email + auto-reply
+- ✅ **View analytics** - đếm lượt xem CV
+- ✅ **Rate limiting** - bảo vệ chống spam
+- ✅ **CORS & Security** middleware
+- ✅ Environment configuration
+- ✅ **Professional email templates** với HTML
 
-- **React.js** - Frontend framework
+## 🛠️ Tech Stack
+
+### Frontend
+- **React.js** - UI framework
 - **Vite** - Build tool và dev server
 - **CSS3** - Styling với Flexbox và Grid
-- **HTML5** - Semantic markup
+- **Fetch API** - HTTP client
+
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **Nodemailer** - Email service
+- **Helmet** - Security middleware
+- **Express Rate Limit** - API protection
+- **CORS** - Cross-origin requests
+- **dotenv** - Environment variables
 
 ## 📦 Cài đặt và chạy
 
 ### Yêu cầu hệ thống
-- Node.js (phiên bản 14 trở lên)
+- Node.js (phiên bản 16 trở lên)
 - npm hoặc yarn
+- Gmail account (cho email service)
 
-### Hướng dẫn cài đặt
+### 🚀 Quick Start
 
-1. **Clone repository hoặc download source code**
+1. **Clone repository**
 ```bash
-git clone <repository-url>
-cd react-cv
+git clone https://github.com/Hikhai/my-cv-website.git
+cd my-cv-website
 ```
 
 2. **Cài đặt dependencies**
 ```bash
+# Frontend dependencies
 npm install
+
+# Backend dependencies  
+cd backend && npm install && cd ..
 ```
 
-3. **Chạy ứng dụng ở chế độ development**
+3. **Cấu hình email (quan trọng!)**
 ```bash
+# Copy và cập nhật file .env cho backend
+cp backend/.env.example backend/.env
+```
+
+Cập nhật `backend/.env`:
+```env
+EMAIL_USER=your-gmail@gmail.com
+EMAIL_PASS=your-app-password
+EMAIL_TO=khaihh.goog@gmail.com
+```
+
+4. **Chạy cả Frontend + Backend**
+```bash
+npm run dev:full
+```
+
+**Hoặc chạy riêng lẻ:**
+```bash
+# Terminal 1 - Backend
+npm run backend
+
+# Terminal 2 - Frontend
 npm run dev
 ```
 
-4. **Mở trình duyệt và truy cập**
+5. **Truy cập ứng dụng**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
+- Health check: http://localhost:5000/api/health
+
+## 🔌 API Endpoints
+
+### Health Check
 ```
-http://localhost:5173
+GET /api/health
+```
+Response: Server status và thông tin version
+
+### CV Data
+```
+GET /api/cv
+```
+Response: Toàn bộ dữ liệu CV + increment view count
+
+```
+GET /api/cv/stats  
+```
+Response: Thống kê lượt xem CV
+
+### Contact Form
+```
+POST /api/contact
+```
+Body:
+```json
+{
+  "name": "Tên người gửi",
+  "email": "email@example.com", 
+  "message": "Nội dung tin nhắn"
+}
+```
+Response: Status + gửi email tự động
+
+## 📧 Email Configuration
+
+### Tạo Gmail App Password
+
+1. Vào **Google Account** → **Security**
+2. Bật **2-Step Verification**
+3. Tạo **App Password**:
+   - Select app: **Mail**
+   - Select device: **Other** → nhập "CV Website"
+   - Copy password 16 ký tự
+
+### Cập nhật Environment Variables
+
+**Backend (.env):**
+```env
+PORT=5000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+
+# Email Configuration
+EMAIL_SERVICE=gmail
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-16-digit-app-password
+EMAIL_FROM=your-email@gmail.com
+EMAIL_TO=khaihh.goog@gmail.com
+```
+
+**Frontend (.env):**
+```env
+VITE_API_URL=http://localhost:5000/api
+VITE_USE_API=true
+```
+
+## 📁 Cấu trúc dự án
+
+```
+react-cv/
+├── 🎨 Frontend
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   │   ├── Header.jsx
+│   │   │   ├── About.jsx
+│   │   │   ├── Experience.jsx
+│   │   │   ├── Education.jsx
+│   │   │   ├── Skills.jsx
+│   │   │   └── Contact.jsx
+│   │   ├── services/       # API service layer
+│   │   │   └── api.js
+│   │   ├── data/          # Static data
+│   │   │   └── cvData.js
+│   │   ├── App.jsx        # Main app
+│   │   └── main.jsx
+│   ├── public/            # Static assets
+│   ├── .env              # Frontend environment
+│   └── package.json
+│
+├── 🔧 Backend  
+│   ├── routes/
+│   │   ├── cv.js         # CV data endpoints
+│   │   └── contact.js    # Contact form endpoints
+│   ├── .env              # Backend environment
+│   ├── .env.example      # Environment template
+│   ├── server.js         # Express server
+│   └── package.json
+│
+├── 📚 Documentation
+│   ├── README.md         # Main documentation
+│   ├── CUSTOMIZE.md      # Customization guide
+│   └── DEPLOY.md         # Deployment guide
+│
+└── 🔧 Config
+    ├── .gitignore
+    └── vite.config.js
+```
+
+## ⚡ Available Scripts
+
+```bash
+# Development
+npm run dev          # Frontend only
+npm run backend      # Backend only  
+npm run dev:full     # Frontend + Backend concurrently
+
+# Production
+npm run build        # Build frontend for production
+npm run preview      # Preview production build
+
+# Utilities
+npm run lint         # ESLint check
 ```
 
 ## 🎨 Tùy chỉnh CV
